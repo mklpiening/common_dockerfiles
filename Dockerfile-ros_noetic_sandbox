@@ -6,7 +6,7 @@ ENV LC_ALL C.UTF-8
 
 # basic stuff
 RUN apt update
-RUN apt install -q -y --no-install-recommends build-essential tmux vim
+RUN apt install -q -y --no-install-recommends build-essential tmux vim git
 
 COPY misc/bashrc_ros_noetic_sandbox /root/.bashrc
 

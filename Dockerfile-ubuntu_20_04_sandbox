@@ -6,7 +6,7 @@ ENV LC_ALL C.UTF-8
 
 # basic stuff
 RUN apt update
-RUN apt install -q -y --no-install-recommends build-essential tmux vim
+RUN apt install -q -y --no-install-recommends build-essential tmux vim git sudo ssh
 
 COPY misc/bashrc_ubuntu_20_04_sandbox /root/.bashrc
 
