@@ -1,0 +1,47 @@
+FROM ubuntu:focal
+
+# setup env
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
+# basic stuff
+RUN apt update
+RUN apt install -q -y --no-install-recommends build-essential tmux vim
+
+COPY misc/bashrc_ros_noetic_sandbox /root/.bashrc
+
+# setup timezone
+RUN echo 'Etc/UTC' > /etc/timezone
+RUN ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime
+RUN apt install -q -y --no-install-recommends tzdata
+
+# setup ROS
+RUN apt install -q -y --no-install-recommends dirmngr gnupg2 curl ca-certificates
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros-latest.list'
+
+# barebones ros installation
+# - we want all packages to be installed as dependencies of our packages
+RUN apt update
+RUN apt install -q -y --no-install-recommends ros-noetic-desktop
+RUN apt install -q -y --no-install-recommends python3-rosdep
+
+# install catkin
+RUN apt install -q -y --no-install-recommends python3-catkin-tools
+RUN apt install -q -y --no-install-recommends python3-catkin-lint
+
+# copy ssh keys from system into container
+ARG ssh_prv_key
+ARG ssh_pub_key
+
+RUN mkdir -p /root/.ssh/
+RUN echo "$ssh_prv_key" > /root/.ssh/id_rsa && \
+    echo "$ssh_pub_key" > /root/.ssh/id_rsa.pub && \
+    chmod 600 /root/.ssh/id_rsa && \
+    chmod 600 /root/.ssh/id_rsa.pub
+
+# make docker source the ros installation
+COPY misc/entrypoint_ros_noetic_sandbox.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["bash"]
+
