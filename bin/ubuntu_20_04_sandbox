@@ -1,2 +1,3 @@
 #!/bin/bash
-docker run -it ubuntu_20_04_sandbox
+docker run -it --name ubuntu_20_04_sandbox ubuntu_20_04_sandbox
+docker rm ubuntu_20_04_sandbox

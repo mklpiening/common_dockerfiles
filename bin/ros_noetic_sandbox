@@ -1,2 +1,3 @@
 #!/bin/bash
-docker run -it ros_noetic_sandbox
+docker run -it --name ros_noetic_sandbox ros_noetic_sandbox
+docker rm ros_noetic_sandbox
