@@ -15,3 +15,11 @@ echo "| building ros noetic sandbox |"
 echo "+-----------------------------+"
 echo ""
 docker build . --build-arg ssh_prv_key="$PRV_KEY" --build-arg ssh_pub_key="$PUB_KEY" -t ros_noetic_sandbox -f Dockerfile-ros_noetic_sandbox
+
+echo ""
+echo "+-------------------------------+"
+echo "| building ros noetic workspace |"
+echo "+-------------------------------+"
+echo ""
+docker build . --build-arg ssh_prv_key="$PRV_KEY" --build-arg ssh_pub_key="$PUB_KEY" -t ros_noetic_workspace -f Dockerfile-ros_noetic_workspace
+

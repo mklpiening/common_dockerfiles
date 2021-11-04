@@ -1,3 +1,9 @@
 #!/bin/bash
-docker run -it --name ros_noetic_sandbox ros_noetic_sandbox
+docker run \
+    -it \
+    --name ros_noetic_sandbox \
+    --env="DISPLAY" \
+    --volume="$HOME/.Xauthority:/root/.Xauthority:rw" \
+    --net=host \
+    ros_noetic_sandbox
 docker rm ros_noetic_sandbox
