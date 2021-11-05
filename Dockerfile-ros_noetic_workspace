@@ -8,8 +8,6 @@ ENV LC_ALL C.UTF-8
 RUN apt update
 RUN apt install -q -y --no-install-recommends build-essential tmux vim git
 
-COPY misc/bashrc_ros_noetic_workspace /root/.bashrc
-
 # setup timezone
 RUN echo 'Etc/UTC' > /etc/timezone
 RUN ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime
@@ -25,13 +23,22 @@ RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/s
 RUN apt update
 RUN apt install -q -y --no-install-recommends ros-noetic-desktop
 RUN apt install -q -y --no-install-recommends python3-rosdep
+RUN rosdep init
 
 # install catkin
 RUN apt install -q -y --no-install-recommends python3-catkin-tools
 RUN apt install -q -y --no-install-recommends python3-catkin-lint
 
 # install misc stuff
-RUN apt install -q -y --no-install-recommends ranger neofetch qt5-style-kvantum qt5-style-kvantum-themes
+RUN apt install -q -y --no-install-recommends ranger neofetch
+RUN apt install -q -y --no-install-recommends qt5-style-kvantum qt5-style-kvantum-themes
+
+RUN apt install -q -y --no-install-recommends zsh
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+RUN chsh -s /usr/bin/zsh
+COPY misc/zshrc_ros_noetic_workspace /root/.zshrc
 
 # copy ssh keys from system into container
 ARG ssh_prv_key
@@ -44,4 +51,6 @@ RUN echo "$ssh_prv_key" > /root/.ssh/id_rsa && \
     chmod 600 /root/.ssh/id_rsa.pub
 
 # make docker source the ros installation
+COPY misc/entrypoint_ros_noetic_workspace.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["tmux"]

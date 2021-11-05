@@ -1,0 +1,60 @@
+export ZSH="/root/.oh-my-zsh"
+
+ZSH_THEME="bureau"
+
+plugins=(
+  git
+  zsh-syntax-highlighting
+  zsh-autosuggestions
+)
+
+source $ZSH/oh-my-zsh.sh
+
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+
+zstyle :compinstall filename '/root/.zshrc'
+
+# autocomplete
+autoload -Uz compinit
+compinit
+_comp_options+=(globdots)
+
+##############
+# vim bindings
+##############
+
+bindkey -v
+
+# visualize insert or command mode using cursor style
+# default line
+echo -ne '\e[6 q'
+function zle-keymap-select {
+  if [[ ${KEYMAP} == vicmd ]]; then
+    # block for command
+    echo -ne '\e[2 q'
+  else
+    # line for insert
+    echo -ne '\e[6 q'
+  fi
+
+  # change prompt style
+  #PROMPT='${${KEYMAP/vicmd/> $_LIBERTY_NORMAL }/(main|viins)/> $_LIBERTY_INSERT }'
+  #zle reset-prompt
+}
+zle -N zle-keymap-select
+
+# autosuggest config
+bindkey '^ ' autosuggest-accept
+
+
+###########
+# ROS stuff
+###########
+
+ROS_BASE_DIR="/opt/ros"
+ROSVERSION="noetic" 
+
+source $ROS_BASE_DIR/$ROSVERSION/setup.zsh
+source /catkin_ws/devel/setup.zsh
+
+export QT_STYLE_OVERRIDE=kvantum
