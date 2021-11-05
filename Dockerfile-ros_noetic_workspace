@@ -6,7 +6,7 @@ ENV LC_ALL C.UTF-8
 
 # basic stuff
 RUN apt update
-RUN apt install -q -y --no-install-recommends build-essential tmux vim git
+RUN apt install -q -y --no-install-recommends build-essential tmux vim git python3 python3-pip
 
 # setup timezone
 RUN echo 'Etc/UTC' > /etc/timezone
