@@ -12,6 +12,8 @@ if [ ! "$(docker ps -a | grep $1)" ]; then
         --volume="$HOME/.Xauthority:/root/.Xauthority:rw" \
         --volume="$HOME/.config:/root/.config:rw" \
         --volume="/usr/share/Kvantum:/usr/share/Kvantum:ro" \
+	--privileged \
+        --volume="/dev:/dev:rw" \
         --net=host \
         ros_noetic_workspace
 else
