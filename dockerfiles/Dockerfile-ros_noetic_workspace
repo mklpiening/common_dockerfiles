@@ -4,6 +4,11 @@ FROM ubuntu:focal
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
+ENV NVIDIA_VISIBLE_DEVICES \
+    ${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES \
+    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+
 # basic stuff
 RUN apt update
 RUN apt install -q -y --no-install-recommends build-essential tmux vim git python3 python3-pip
@@ -32,25 +37,34 @@ RUN apt install -q -y --no-install-recommends python3-catkin-lint
 # install misc stuff
 RUN apt install -q -y --no-install-recommends ranger neofetch
 RUN apt install -q -y --no-install-recommends qt5-style-kvantum qt5-style-kvantum-themes
-
 RUN apt install -q -y --no-install-recommends zsh
+
+RUN echo "root:docker" | chpasswd
+RUN useradd -g sudo -ms /usr/bin/zsh docker
+RUN echo "docker:docker" | chpasswd
+
+USER docker
+WORKDIR /home/docker
+
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-RUN git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-RUN chsh -s /usr/bin/zsh
-COPY misc/zshrc_ros_noetic_workspace /root/.zshrc
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-/home/docker/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-/home/docker/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+COPY misc/zshrc_ros_noetic_workspace /home/docker/.zshrc
+
+RUN git clone https://github.com/tmux-plugins/tpm /home/docker/.tmux/plugins/tpm
 
 # copy ssh keys from system into container
 ARG ssh_prv_key
 ARG ssh_pub_key
 
-RUN mkdir -p /root/.ssh/
-RUN echo "$ssh_prv_key" > /root/.ssh/id_rsa && \
-    echo "$ssh_pub_key" > /root/.ssh/id_rsa.pub && \
-    chmod 600 /root/.ssh/id_rsa && \
-    chmod 600 /root/.ssh/id_rsa.pub
+RUN mkdir -p /home/docker/.ssh/
+RUN echo "$ssh_prv_key" > /home/docker/.ssh/id_rsa && \
+    echo "$ssh_pub_key" > /home/docker/.ssh/id_rsa.pub && \
+    chmod 600 /home/docker/.ssh/id_rsa && \
+    chmod 600 /home/docker/.ssh/id_rsa.pub
 
 # make docker source the ros installation
-COPY misc/entrypoint_ros_noetic_workspace.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY misc/entrypoint_ros_noetic_workspace.sh /home/docker/entrypoint.sh
+
+ENTRYPOINT ["/home/docker/entrypoint.sh"]
 CMD ["tmux"]

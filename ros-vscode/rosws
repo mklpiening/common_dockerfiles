@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ "$#" -ne 2 ]; then
+    echo "Please pass two parameters: rosws [init, attach] <workspace_name>"
+    exit 1
+fi
+
+if [[ $1 == "init" ]]; then
+    echo "Initializing ros-vscode workspace '$2' for this directory ..."
+    mkdir -p .devcontainer
+    cp ~/.local/share/rosws/Dockerfile .devcontainer/Dockerfile
+    cp ~/.local/share/rosws/postCreateCommand.sh .devcontainer/postCreateCommand.sh
+    cp ~/.local/share/rosws/devcontainer-template.json .devcontainer/devcontainer.json
+    cp ~/.local/share/rosws/zshrc .devcontainer/zshrc
+
+    sed -i "s/{NAME}/$2_vscode/" .devcontainer/devcontainer.json
+elif [[ $1 == "attach" ]]; then
+    echo "Attaching to ros-vscore workspace '$2' ..."
+    docker exec -it $2_vscode tmux
+else
+    echo "Only these commands are available: rosws [init, attach] <workspace_name>"
+fi

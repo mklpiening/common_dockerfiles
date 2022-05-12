@@ -1,0 +1,30 @@
+{
+  "name": "{NAME}",
+  "dockerFile": "Dockerfile",
+  "extensions": [
+    "ms-iot.vscode-ros",
+    "twxs.cmake",
+    "ms-vscode.cmake-tools",
+    "ms-vscode.cpptools",
+    "ms-vscode.cpptools-extension-pack",
+    "ms-python.python"
+  ],
+  "remoteUser": "docker",
+  "mounts": [
+    "source=${localEnv:HOME}/.Xauthority,target=/home/docker/.Xauthority,type=bind",
+    "source=${localEnv:HOME}/.config,target=/home/docker/.config,type=bind",
+    "source=${localEnv:HOME}/.tmux.conf,target=/home/docker/.tmux.conf,type=bind",
+    "source=/usr/share/Kvantum,target=/usr/share/Kvantum,type=bind",
+    "source=/dev,target=/dev,type=bind",
+    "source=vscode-extensions,target=/home/docker/.vscode-server,type=volume"
+  ],
+  "postCreateCommand": ["sh", ".devcontainer/postCreateCommand.sh"],
+  "runArgs": [
+    "--privileged",
+    "--net=host",
+    "--env=DISPLAY=${localEnv:DISPLAY}",
+    "--env=QT_X11_NO_MITSHM=1",
+    "--runtime=nvidia",
+    "--name={NAME}"
+  ]
+}

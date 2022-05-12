@@ -1,4 +1,4 @@
-export ZSH="/root/.oh-my-zsh"
+export ZSH="/home/docker/.oh-my-zsh"
 
 ZSH_THEME="bureau"
 
@@ -12,7 +12,7 @@ source $ZSH/oh-my-zsh.sh
 
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 
-zstyle :compinstall filename '/root/.zshrc'
+zstyle :compinstall filename '/home/docker/.zshrc'
 
 # autocomplete
 autoload -Uz compinit
@@ -55,6 +55,6 @@ ROS_BASE_DIR="/opt/ros"
 ROSVERSION="noetic" 
 
 source $ROS_BASE_DIR/$ROSVERSION/setup.zsh
-source /catkin_ws/devel/setup.zsh
+source /home/docker/catkin_ws/devel/setup.zsh
 
 export QT_STYLE_OVERRIDE=kvantum
