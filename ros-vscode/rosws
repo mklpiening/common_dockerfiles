@@ -16,7 +16,7 @@ if [[ $1 == "init" ]]; then
     sed -i "s/{NAME}/$2_vscode/" .devcontainer/devcontainer.json
 elif [[ $1 == "attach" ]]; then
     echo "Attaching to ros-vscore workspace '$2' ..."
-    docker exec -it $2_vscode tmux
+    docker exec -it $2_vscode sh -c 'cd catkin_ws && tmux'
 else
     echo "Only these commands are available: rosws [init, attach] <workspace_name>"
 fi

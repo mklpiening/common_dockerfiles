@@ -19,6 +19,8 @@
     "source=vscode-extensions,target=/home/docker/.vscode-server,type=volume"
   ],
   "postCreateCommand": ["sh", ".devcontainer/postCreateCommand.sh"],
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/docker/catkin_ws,type=bind,consistency=cached",
+  "workspaceFolder": "/home/docker/catkin_ws",
   "runArgs": [
     "--privileged",
     "--net=host",
