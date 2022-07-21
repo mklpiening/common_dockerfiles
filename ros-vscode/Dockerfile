@@ -1,4 +1,30 @@
-FROM ros:noetic-ros-core-focal
+FROM ubuntu:focal
+
+# setup env
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
+ENV NVIDIA_VISIBLE_DEVICES \
+    ${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES \
+    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+
+# basic stuff
+RUN apt update
+RUN apt install -q -y --no-install-recommends build-essential tmux vim git python3 python3-pip
+
+# setup timezone
+RUN echo 'Etc/UTC' > /etc/timezone
+RUN ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime
+RUN apt install -q -y --no-install-recommends tzdata
+
+# setup ROS
+RUN apt install -q -y --no-install-recommends dirmngr gnupg2 curl ca-certificates
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros-latest.list'
+
+RUN apt update
+RUN apt install -q -y --no-install-recommends ros-noetic-ros-base
 
 WORKDIR /workspace
 
