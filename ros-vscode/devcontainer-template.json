@@ -16,16 +16,18 @@
     "source=${localEnv:HOME}/.tmux.conf,target=/home/docker/.tmux.conf,type=bind",
     "source=/usr/share/Kvantum,target=/usr/share/Kvantum,type=bind",
     "source=/dev,target=/dev,type=bind",
-    "source=vscode-extensions,target=/home/docker/.vscode-server,type=volume"
+    "source=/run,target=/run,type=bind",
+    "source=vscode-extensions,target=/home/docker/.vscode-server,type=volume",
+    "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind"
   ],
   "postCreateCommand": ["sh", ".devcontainer/postCreateCommand.sh"],
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/docker/catkin_ws,type=bind,consistency=cached",
   "workspaceFolder": "/home/docker/catkin_ws",
   "runArgs": [
-    "--privileged",
-    "--net=host",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--ipc=host",
     "--env=DISPLAY=${localEnv:DISPLAY}",
-    "--env=QT_X11_NO_MITSHM=1",
     "--runtime=nvidia",
     "--name={NAME}"
   ]
