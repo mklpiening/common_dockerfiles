@@ -24,10 +24,11 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/docker/catkin_ws,type=bind,consistency=cached",
   "workspaceFolder": "/home/docker/catkin_ws",
   "runArgs": [
-    "--cap-drop=ALL",
-    "--security-opt=no-new-privileges",
+    "--privileged",
+    "--net=host",
     "--ipc=host",
     "--env=DISPLAY=${localEnv:DISPLAY}",
+    "--env=QT_X11_NO_MITSHM=1",
     "--runtime=nvidia",
     "--name={NAME}"
   ]
